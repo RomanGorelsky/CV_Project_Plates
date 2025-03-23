@@ -1,4 +1,6 @@
+import asyncio
 import telebot
+from telebot.async_telebot import AsyncTeleBot
 from telebot import types
 
 api = ""
@@ -6,28 +8,20 @@ with open("api.txt", "r") as myfile:
     for text in myfile:
         api += text
 
-bot = telebot.TeleBot(api)
+bot = AsyncTeleBot(api)
 
-@bot.message_handler(commands = ['start'])
-def url(message):
+@bot.message_handler(commands=['help', 'start'])
+async def url(message):
     markup = types.ReplyKeyboardMarkup(resize_keyboard=True)
     btn1 = types.KeyboardButton('Add plate number')
     markup.add(btn1)
-    bot.send_message(message.from_user.id, "By pressing the button you can add the plate number into the database", reply_markup = markup)
+    await bot.send_message(message.from_user.id, "By pressing the button you can add the plate number into the database", reply_markup = markup)
 
-@bot.message_handler(commands=['hello'])
-def hello(message):
-
-    markup = types.ReplyKeyboardMarkup(resize_keyboard=True)
-    btn1 = types.KeyboardButton("👋 Hi")
-    markup.add(btn1)
-    bot.send_message(message.from_user.id, "👋 Hello!", reply_markup=markup)
-
-@bot.message_handler(content_types=['text'])
-def get_text_messages(message):
+@bot.message_handler(func=lambda message: True)
+async def get_text_messages(message):
 
     if message.text == 'Add plate number':
-        bot.send_message(message.from_user.id, 'Please enter the plate number in the format: "Plate: ..."') #ответ бота
+        await bot.send_message(message.from_user.id, 'Please enter the plate number in the format: "Plate: ..."') #ответ бота
 
     elif message.text.split(" ")[0] == 'Plate:':
         number = ""
@@ -36,6 +30,9 @@ def get_text_messages(message):
         number += "\n"
         with open("database.txt", "a") as myfile:
             myfile.write(number)
-        bot.send_message(message.from_user.id, 'The plate number is added into the database!')
+        await bot.send_message(message.from_user.id, 'The plate number is added into the database!')
+    
+    else:
+        await bot.send_message(message.from_user.id, 'Please follow the prompt "Plate: ..."')
 
-bot.polling(none_stop=True, interval=0) #обязательная для работы бота часть
+asyncio.run(bot.polling(none_stop=True, interval=0)) #обязательная для работы бота часть
