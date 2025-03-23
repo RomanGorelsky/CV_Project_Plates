@@ -1,7 +1,12 @@
 import telebot
 from telebot import types
 
-bot = telebot.TeleBot('7741285251:AAG1r-ujkIO89lgNWnBM0KwKNmxr1zIy7DI')
+api = ""
+with open("api.txt", "r") as myfile:
+    for text in myfile:
+        api += text
+
+bot = telebot.TeleBot(api)
 
 @bot.message_handler(commands = ['start'])
 def url(message):
