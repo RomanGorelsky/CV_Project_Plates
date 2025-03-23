@@ -107,6 +107,7 @@ pylint==3.1.0
 pymdown-extensions==10.7.1
 pyparsing==3.1.2
 pyproject_hooks==1.2.0
+pyTelegramBotAPI==4.26.0
 pytest==8.2.0
 python-dateutil==2.9.0.post0
 pytz==2024.1
