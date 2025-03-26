@@ -27,10 +27,15 @@ async def get_text_messages(message):
         number = ""
         for i in range(1, len(message.text.split(" "))):
             number += message.text.split(" ")[i]
-        number += "\n"
+        number = number.upper()
+        reply = 'The plate number is added into the database!'
         with open("database.txt", "a") as myfile:
-            myfile.write(number)
-        await bot.send_message(message.from_user.id, 'The plate number is added into the database!')
+            if number in open('database.txt').read():
+                reply = 'The plate number is already in the database'
+            else:
+                number += "\n"
+                myfile.write(number)
+        await bot.send_message(message.from_user.id, reply)
     
     else:
         await bot.send_message(message.from_user.id, 'Please follow the prompt "Plate: ..."')
